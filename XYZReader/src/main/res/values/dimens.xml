@@ -7,5 +7,9 @@
     <dimen name="fab_elevation">2dp</dimen>
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">24dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="toolBar_height">56dp</dimen>
+    <dimen name="article_list_top_padding">60dp</dimen>
 
 </resources>

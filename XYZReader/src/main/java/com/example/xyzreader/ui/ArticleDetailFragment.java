@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -16,7 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
 import android.text.Html;
@@ -28,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -54,13 +59,16 @@ public class ArticleDetailFragment extends Fragment implements
     private ObservableScrollView mScrollView;
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
+    private com.example.xyzreader.ui.MaxWidthLinearLayout maxWidthLinearLayout;
 
+    private android.support.v7.widget.Toolbar mToolbar;
     private int mTopInset;
-    private View mPhotoContainerView;
+   // private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -97,9 +105,11 @@ public class ArticleDetailFragment extends Fragment implements
         setHasOptionsMenu(true);
     }
 
+
     public ArticleDetailActivity getActivityCast() {
         return (ArticleDetailActivity) getActivity();
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -116,6 +126,24 @@ public class ArticleDetailFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
+
+        mToolbar = mRootView.findViewById(R.id.toolbar);
+
+        getActivityCast().setSupportActionBar(mToolbar);
+
+        AppBarLayout mAppBarLayout = mRootView.findViewById(R.id.app_bar_layout);
+
+        final Drawable upArrow = getActivityCast().getResources().getDrawable(R.drawable.ic_arrow_back);
+
+
+        if(mToolbar !=null){
+            getActivityCast().getSupportActionBar().setHomeButtonEnabled(true);
+            getActivityCast().getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            getActivityCast().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getActivityCast().getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+
         mDrawInsetsFrameLayout = (DrawInsetsFrameLayout)
                 mRootView.findViewById(R.id.draw_insets_frame_layout);
         mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
@@ -125,19 +153,43 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
+
+        mScrollView =  mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
             @Override
             public void onScrollChanged() {
                 mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
-                updateStatusBar();
+        //        getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
+            //    mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
+           //     updateStatusBar();
             }
         });
 
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean showTitle = true;
+            int scrollRange = -1;
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                scrollRange = (scrollRange == -1 ) ? appBarLayout.getTotalScrollRange() : scrollRange;
+
+            if ((scrollRange + verticalOffset) == 0){
+                collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
+                showTitle = true;
+            } else if (showTitle) {
+                collapsingToolbarLayout.setTitle("");
+                showTitle = false;
+            }
+
+            }
+        });
+
+
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
+       // mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
+
+
+       // int height = mPhotoContainerView.getHeight();
+        maxWidthLinearLayout = (MaxWidthLinearLayout) mRootView.findViewById(R.id.maxwidthLinearLayout);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
@@ -152,10 +204,11 @@ public class ArticleDetailFragment extends Fragment implements
         });
 
         bindViews();
-        updateStatusBar();
+      //  updateStatusBar();
         return mRootView;
     }
 
+    /*
     private void updateStatusBar() {
         int color = 0;
         if (mPhotoView != null && mTopInset != 0 && mScrollY > 0) {
@@ -170,6 +223,8 @@ public class ArticleDetailFragment extends Fragment implements
         mStatusBarColorDrawable.setColor(color);
         mDrawInsetsFrameLayout.setInsetBackground(mStatusBarColorDrawable);
     }
+
+    */
 
     static float progress(float v, float min, float max) {
         return constrain((v - min) / (max - min), 0, 1);
@@ -201,11 +256,13 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
+       // TextView appBarTitle = mRootView.findViewById(R.id.app_bar_title);
+
         TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-        bodyView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD); //justify text
+        collapsingToolbarLayout = mRootView.findViewById(R.id.collapsing_toolbar);
 
        // bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
@@ -214,6 +271,8 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
+
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
                 bylineView.setText(Html.fromHtml(
@@ -245,7 +304,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
                                 mRootView.findViewById(R.id.meta_bar)
                                         .setBackgroundColor(mMutedColor);
-                                updateStatusBar();
+                            //    updateStatusBar();
                             }
                         }
 
@@ -292,6 +351,7 @@ public class ArticleDetailFragment extends Fragment implements
         bindViews();
     }
 
+    /*
     public int getUpButtonFloor() {
         if (mPhotoContainerView == null || mPhotoView.getHeight() == 0) {
             return Integer.MAX_VALUE;
@@ -302,4 +362,5 @@ public class ArticleDetailFragment extends Fragment implements
                 ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
                 : mPhotoView.getHeight() - mScrollY;
     }
+    */
 }

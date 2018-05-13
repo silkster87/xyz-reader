@@ -4,12 +4,23 @@
     <dimen name="detail_body_text_size">22sp</dimen>
     <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.25</item>
 
+
+    <!-- fab button -->
     <dimen name="fab_elevation">2dp</dimen>
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">24dp</dimen>
+    <dimen name="fab_width_height">56dp</dimen>
+
+    <!-- app bar -->
     <dimen name="app_bar_elevation">4dp</dimen>
-    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="big_app_bar_height">256dp</dimen>
     <dimen name="toolBar_height">56dp</dimen>
+
+    <!-- collapsing toolbar -->
+    <dimen name="col_toolbar_margin_start">48dp</dimen>
+    <dimen name="col_toolbar_margin_end">64dp</dimen>
+
+    <dimen name="card_elevation">2dp</dimen>
     <dimen name="article_list_top_padding">60dp</dimen>
 
 </resources>

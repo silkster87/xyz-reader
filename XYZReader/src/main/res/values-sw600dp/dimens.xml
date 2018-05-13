@@ -7,4 +7,8 @@
     <dimen name="app_bar_elevation">4dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
 
+    <!-- article -->
+    <dimen name="article_title_textsize">24sp</dimen>
+    <dimen name="article_subtitle_textsize">20sp</dimen>
+
 </resources>

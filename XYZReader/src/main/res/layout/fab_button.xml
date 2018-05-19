@@ -16,3 +16,7 @@
     android:contentDescription="@string/action_share">
 
 </android.support.design.widget.FloatingActionButton>
+
+<!-- The FAB button already has ripples and elevation enabled but you can
+ manually specify those values. If you do, make sure it follows material
+ design guidelines.-->

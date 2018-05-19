@@ -302,12 +302,13 @@ public class ArticleDetailFragment extends Fragment implements
                                     @Override
                                     public void onGenerated(@NonNull Palette p) {
                                         mMutedColor = p.getDarkMutedColor(0xFF333333);
+                                        mRootView.findViewById(R.id.meta_bar)
+                                                .setBackgroundColor(mMutedColor);
                                     }
                                 });
                                // Palette p = Palette.generate(bitmap, 12);
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
-                                        .setBackgroundColor(mMutedColor);
+
                                 //    updateStatusBar();
                             }
                         }

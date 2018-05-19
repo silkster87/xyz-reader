@@ -129,7 +129,7 @@
         </FrameLayout>
     </com.example.xyzreader.ui.ObservableScrollView>
 
-    <include layout="@layout/fab_button"/>
+        <include layout="@layout/fab_button" />
 
 
     </android.support.design.widget.CoordinatorLayout>

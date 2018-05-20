@@ -8,7 +8,7 @@ This app is an e-reader where you can select a range of different passages from 
 
 You can swipe left or right between the views as it uses a pager for the content.
 
-<img src="images/xyz_reader_content.png" width="300">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <img src="images/xyz_reader_content.png" width="300">
 
 
 
